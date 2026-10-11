@@ -1,0 +1,23 @@
+# Java build output
+backend/target/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Operating system files
+.DS_Store
+Thumbs.db
