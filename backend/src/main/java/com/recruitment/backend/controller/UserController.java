@@ -1,6 +1,6 @@
 package com.recruitment.backend.controller;
 
-import com.recruitment.backend.entity.User;
+import com.recruitment.backend.dto.UserResponse;
 import com.recruitment.backend.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,16 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserResponse(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getRole()
+                ))
+                .toList();
     }
 }
