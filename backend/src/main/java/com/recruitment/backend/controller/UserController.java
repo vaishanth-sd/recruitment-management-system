@@ -1,11 +1,14 @@
 package com.recruitment.backend.controller;
 
+import com.recruitment.backend.dto.UserRegistrationRequest;
 import com.recruitment.backend.dto.UserResponse;
 import com.recruitment.backend.repository.UserRepository;
+import com.recruitment.backend.service.UserService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,9 +17,14 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(
+            UserRepository userRepository,
+            UserService userService) {
+
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -31,5 +39,13 @@ public class UserController {
                         user.getRole()
                 ))
                 .toList();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse registerUser(
+            @Valid @RequestBody UserRegistrationRequest request) {
+
+        return userService.registerUser(request);
     }
 }
