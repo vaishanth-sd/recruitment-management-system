@@ -1,5 +1,6 @@
 package com.recruitment.backend.controller;
 
+import com.recruitment.backend.dto.UserLoginRequest;
 import com.recruitment.backend.dto.UserRegistrationRequest;
 import com.recruitment.backend.dto.UserResponse;
 import com.recruitment.backend.repository.UserRepository;
@@ -19,10 +20,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserController(
-            UserRepository userRepository,
-            UserService userService) {
-
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
         this.userService = userService;
     }
@@ -36,8 +34,7 @@ public class UserController {
                         user.getId(),
                         user.getName(),
                         user.getEmail(),
-                        user.getRole()
-                ))
+                        user.getRole()))
                 .toList();
     }
 
@@ -47,5 +44,12 @@ public class UserController {
             @Valid @RequestBody UserRegistrationRequest request) {
 
         return userService.registerUser(request);
+    }
+
+    @PostMapping("/login")
+    public UserResponse loginUser(
+            @Valid @RequestBody UserLoginRequest request) {
+
+        return userService.loginUser(request);
     }
 }
