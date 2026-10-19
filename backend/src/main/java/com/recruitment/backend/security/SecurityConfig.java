@@ -32,8 +32,15 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .requestMatchers("/api/users/login").permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/users",
+                                "/api/users/login")
+                        .permitAll()
+                        .requestMatchers("/api/candidate/**")
+                        .hasRole("CANDIDATE")
+                        .requestMatchers("/api/recruiter/**")
+                        .hasRole("RECRUITER")
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(

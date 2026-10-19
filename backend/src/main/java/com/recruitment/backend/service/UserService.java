@@ -57,7 +57,7 @@ public class UserService {
             throw new InvalidCredentialsException();
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(),user.getRole());
 
         return new LoginResponse(
                 user.getId(),

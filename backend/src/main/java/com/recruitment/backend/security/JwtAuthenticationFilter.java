@@ -41,29 +41,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (jwtService.isTokenValid(token)
-                && SecurityContextHolder.getContext()
-                        .getAuthentication() == null) {
+        if (!jwtService.isTokenValid(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-            String email = jwtService.extractEmail(token);
+        String email = jwtService.extractEmail(token);
+        String role = jwtService.extractRole(token);
 
+        if (!"CANDIDATE".equals(role) && !"RECRUITER".equals(role)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = User.withUsername(email)
                     .password("")
-                    .authorities(List.of())
+                    .authorities("ROLE_" + role)
                     .build();
 
-            var authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
 
             authentication.setDetails(
-                    new WebAuthenticationDetailsSource()
-                            .buildDetails(request));
+                    new WebAuthenticationDetailsSource().buildDetails(request));
 
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
     }
+
 }
