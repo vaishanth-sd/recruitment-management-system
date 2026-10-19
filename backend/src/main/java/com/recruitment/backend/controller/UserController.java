@@ -5,6 +5,8 @@ import com.recruitment.backend.dto.UserRegistrationRequest;
 import com.recruitment.backend.dto.UserResponse;
 import com.recruitment.backend.repository.UserRepository;
 import com.recruitment.backend.service.UserService;
+import com.recruitment.backend.dto.LoginResponse;
+
 
 import jakarta.validation.Valid;
 
@@ -47,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public UserResponse loginUser(
+    public LoginResponse loginUser(
             @Valid @RequestBody UserLoginRequest request) {
 
         return userService.loginUser(request);

@@ -6,6 +6,8 @@ import com.recruitment.backend.dto.UserResponse;
 import com.recruitment.backend.entity.User;
 import com.recruitment.backend.repository.UserRepository;
 import com.recruitment.backend.exception.InvalidCredentialsException;
+import com.recruitment.backend.dto.LoginResponse;
+import com.recruitment.backend.security.JwtService;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.jwtService = jwtService;
     }
 
     public UserResponse registerUser(UserRegistrationRequest request) {
@@ -43,7 +47,7 @@ public class UserService {
                 savedUser.getRole());
     }
 
-    public UserResponse loginUser(UserLoginRequest request) {
+    public LoginResponse loginUser(UserLoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail().trim())
                 .orElseThrow(InvalidCredentialsException::new);
@@ -53,11 +57,14 @@ public class UserService {
             throw new InvalidCredentialsException();
         }
 
-        return new UserResponse(
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponse(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole());
+                user.getRole(),
+                token);
     }
 
 }
