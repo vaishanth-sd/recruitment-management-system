@@ -9,20 +9,44 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secret;
+    private final String secret;
+    private final long expiration;
+    private final SecretKey signingKey;
 
-    @Value("${jwt.expiration}")
-    private long expiration;
+    public JwtService(
+            @Value("${jwt.secret:${JWT_SECRET:}}") String secret,
+            @Value("${jwt.expiration:86400000}") long expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+        this.signingKey = initSigningKey(secret);
+    }
+
+    private SecretKey initSigningKey(String secret) {
+        if (secret != null && !secret.isBlank()) {
+            try {
+                byte[] keyBytes = Decoders.BASE64.decode(secret.trim());
+                if (keyBytes.length >= 32) {
+                    return Keys.hmacShaKeyFor(keyBytes);
+                }
+            } catch (Exception ignored) {
+                // Not valid base64, attempt raw UTF-8 bytes below
+            }
+            byte[] rawBytes = secret.trim().getBytes(StandardCharsets.UTF_8);
+            if (rawBytes.length >= 32) {
+                return Keys.hmacShaKeyFor(rawBytes);
+            }
+        }
+        return Jwts.SIG.HS256.key().build();
+    }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return this.signingKey;
     }
 
     public String generateToken(String email,String role) {
