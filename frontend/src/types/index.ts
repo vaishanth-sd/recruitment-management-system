@@ -7,6 +7,17 @@ export interface AuthUser {
   role: UserRole;
 }
 
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 export interface LoginResponse {
   id: number;
   name: string;
@@ -32,6 +43,13 @@ export interface Job {
   createdAt: string;
 }
 
+export interface CreateJobPayload {
+  title: string;
+  description: string;
+  location: string;
+  company: string;
+}
+
 export type ApplicationStatus = 'APPLIED' | 'REVIEWING' | 'SHORTLISTED' | 'REJECTED';
 
 export interface JobApplication {
@@ -40,6 +58,10 @@ export interface JobApplication {
   applicantEmail: string;
   status: ApplicationStatus;
   appliedAt: string;
+}
+
+export interface UpdateStatusPayload {
+  status: ApplicationStatus;
 }
 
 export interface ApiErrorResponse {
