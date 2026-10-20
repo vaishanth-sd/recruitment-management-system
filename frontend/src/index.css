@@ -642,3 +642,66 @@ button, input, select, textarea {
   gap: 1rem;
   flex-wrap: wrap;
 }
+
+/* Mobile Navigation */
+.mobile-toggle-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0.35rem 0.625rem;
+  font-size: 1.125rem;
+  color: var(--color-slate-700);
+  cursor: pointer;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .nav-desktop {
+    display: none !important;
+  }
+  .mobile-toggle-btn {
+    display: block;
+  }
+}
+
+.mobile-menu-drawer {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 1.5rem 1.5rem;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.mobile-menu-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-md);
+  color: var(--color-slate-700);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+}
+
+.mobile-nav-link:hover, .mobile-nav-link.active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.mobile-menu-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Accessibility Focus Visible */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
